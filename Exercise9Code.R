@@ -88,4 +88,29 @@ lapply(files, function(x) {
 })
 
 
+##REAL CODE
+coeffvar<- function(dir, col=1, narm=TRUE, req=TRUE){
+  files<-list.files(path=dir)
+  files<-files[grepl(".csv", files, fixed = TRUE)]
+  results<-numeric(length(files))
+  #for loop, loop through files and calculate coeff of var
+  for (i in 1:length(files)){
+    read<-read.csv(files[i], header=TRUE, stringsAsFactors = FALSE)
+    #if else statement; people can override required obs warning by specifying req=FALSE
+    if(req==TRUE){
+      if(sum(! is.na(read[,col]))>=50){
+        results[i]<-sd(read[,col], na.rm=narm)/mean(read[,col], na.rm=narm)
+      }else {
+        print(paste(files[i],"has less than 50 observations."))
+        results[i]<-sd(read[,col], na.rm=narm)/mean(read[,col], na.rm=narm)
+      }
+    }else{
+      results[i]<-sd(read[,col], na.rm=narm)/mean(read[,col], na.rm=narm)
+    }
+  }
+  return(results)
+}
+
+#Example function use
+coeffvar(dir="C:/Users/Lauren K/Desktop/Biocomptutorials/BioComp_Tutorial11/check", col=2, narm=FALSE, req=FALSE)
 
